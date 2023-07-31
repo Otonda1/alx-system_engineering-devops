@@ -1,2 +1,2 @@
 #!/bin/bash
-pstree | bash
+pgrep bash
