@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Your machine has an SSH configuration file for the local SSH client
-Host 333419-web-01
-    HostName 8.8.8.8
+Host 307554-web-01
+    HostName 3.85.1.116
     IdentityFile ~/.ssh/school
     PasswordAuthentication no
