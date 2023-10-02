@@ -1,28 +1,25 @@
 #!/usr/bin/env bash
-# Configure Nginx server for 404 not found
+# 404 mdification
 
-sudo apt-get update
-sudo apt-get install -y nginx
-sudo chmod go+w /etc/nginx/sites-available/default
-sudo touch /var/www/html/index.html
-sudo touch /var/www/html/error.html
-sudo chmod go+w /var/www/html/index.html
-sudo chmod go+w /var/www/html/error.html
-echo "Hello World" > /var/www/html/index.html
-echo "Ceci n'est pas une page" > /var/www/html/error.html
+sudo apt updte
+sudo apt install -y nginx
 
-echo "server {
-        listen 80;
-        listen [::]:80 default_server;
-        root /var/www/html;
-        index index.html;
-        location /redirect_me {
-                return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
-        }
-        error_page_404 /error.html;
-        location /404 {
-                root /var/www/html/;
-                internal;
-        }
-}" > /etc/nginx/sites-available/default
+sudo echo "Hello World" > /var/www/html/index.html
+sudo echo "Ceci n'est pas une page" > /var/www/html/404.html
+printf %s "server {
+    listen 80;
+    listen [::]:80 default_server;
+    root /var/www/html;
+    index index.html;
+
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+
+    error_page 404 /404.html;
+    location /404.html {
+        try_files $uri $uri/ =404;
+    }
+}
+" > /etc/nginx/sites-enabled/default
 sudo service nginx restart
