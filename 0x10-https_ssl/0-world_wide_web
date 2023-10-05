@@ -1,23 +1,20 @@
-#!/usr/bin/env bash
-# This scripts adds subdomains to my domain provider
-# It displays information about my domain
-
-if  [ "$2" ]; then
-	ipadd=$(dig +short "$2.$1") 
-	record_type=$(dig "$2.$1" | grep -A1 'ANSWER SECTION' | awk 'NR==2' | awk '{print $4}')
-	echo "The subdomain $2 is a $record_type record and points to $ipadd"
-else
-	domain="$1"
-	func() {
-	local subdomain="$1"
-	ipadd=$(dig +short "$subdomain.$domain")
-
-	record_type=$(dig "$subdomain.$domain" | grep -A1 'ANSWER SECTION' | awk 'NR==2' | awk '{print $4}')
-	echo "The subdomain $subdomain is a $record_type and points to $ipadd"
-	}	
-
-	func "www"
-	func "lb-01"
-	func "web-01"
-	func "web-02"
-fi
+sh script to add and display subdomains
+ 
+get_subdmn_info() {
+	    if [ "$#" -eq 1 ]
+		        then
+				    subdomains=('www' 'lb-01' 'web-01' 'web-02')
+				        for subdmn in "${subdomains[@]}"
+						    do
+							            RECORD_TYPE=$(dig $subdmn.$1 | grep -A1 'ANSWER SECTION' | tail -1 | awk '{print $4}')
+								            DESTINATION=$(dig $subdmn.$1 | grep -A1 'ANSWER SECTION' | tail -1 | awk '{print $5}')
+									            echo "The subdomain $subdmn is a $RECORD_TYPE record and points to $DESTINATION"
+										        done
+											    elif [ "$#" -eq 2 ]
+												        then
+														        RECORD_TYPE=$(dig "$2"."$1" | grep -A1 'ANSWER SECTION' | tail -1 | awk '{print $4}')
+															        DESTINATION=$(dig "$2"."$1" | grep -A1 'ANSWER SECTION' | tail -1 | awk '{print $5}')
+																        echo "The subdomain $2 is a $RECORD_TYPE record and points to $DESTINATION"
+																	     fi
+																	      }
+																      get_subdmn_info $1 $2
