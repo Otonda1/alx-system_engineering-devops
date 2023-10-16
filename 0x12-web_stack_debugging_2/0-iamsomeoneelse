@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# a script that creates a user based on argument passed
+
+user="$1"
+sudo adduser "$user"
+sudo su - "$user"
+whoami
+sudo -i
+
+
