@@ -1,21 +1,18 @@
-#!/usr/bin/python 3
-"""
-Records all tasks from all employees in
-JSON format
-"""
-
+#!/usr/bin/python3
+"""Exports to-do list information of all employees to JSON format."""
 import json
 import requests
 
-
 if __name__ == "__main__":
-    filename = "todo_all_employees.json"
-    res = requests.get("https://jsonplaceholder.typicode.com/todos").json()
-    res_id = requests.get("https://jsonplaceholder.typicode.com/users/").json()
-    with open(filename, "w") as file:
-        d = {j.get("id"): [{'task': i.get('title'),
-                            'completed': i.get('completed'),
-                            'username': j.get('username')} for i in res
-                           if j.get("id") == i.get('userId')]
-             for j in res_id}
-        json.dump(d, file)
+    url = "https://jsonplaceholder.typicode.com/"
+    users = requests.get(url + "users").json()
+
+    with open("todo_all_employees.json", "w") as jsonfile:
+        json.dump({
+            u.get("id"): [{
+                "task": t.get("title"),
+                "completed": t.get("completed"),
+                "username": u.get("username")
+            } for t in requests.get(url + "todos",
+                                    params={"userId": u.get("id")}).json()]
+            for u in users}, jsonfile)
